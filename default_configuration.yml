@@ -1,0 +1,51 @@
+# Configuration file for the design parameters
+
+header:
+  analysis_type: "default"       # either "default" (fixed values) or "characterization" (variable values like distance, frequency)
+
+default_config:
+    ### Design parameter ###
+    design_parameter:
+        frequency: 2200 # unit = MHz, min=2200, max=2290 for Sband
+        dataRate: 5 #mbps
+        propagationPathLength: 200 #km
+        requiredEbNo: 12 # unit = dB, min=1, max=13
+
+    ### Transmitter ###
+    transmitter_parameter:
+        transmitPower: 10 # unit = dB, min=0, max=10
+        antennaGainTx:  3 # unit = dB, min=-3, max=0
+        lineLossTx: -3 # unit = dB, min=0, max=3 (negatively)
+        splitterLossTx: -3 # unit = dB, min=0, max=3 (negatively)
+
+    ### Propagation Path ###
+    propagation_path_parameter:
+        FSPL: calculateFSPL(propagationPathLength, frequency)
+        atmosphericLosses: -1 # unit = dB, min=0, max=2
+        polarizationLoss: -3 # unit = dB, min=0, max=3
+
+    ### Receiver ###
+    receiver_parameter:
+        antennaGainRx: 28 # unit = dB, min=-5, max=3 # dB #1.8m or 6ft dish -> 28dB Gain
+        antennaBeamwidthRx: calculateReflectorBeamwidth(antennaGainRx)  # degrees
+        pointingOffsetRx: 1 # unit = deg, min=0, max=5
+        antennaRadomeLossRx: 0  # dB
+        lineLossRx: -3  # dB
+
+    ### Noise ###
+        ambientTemp: 290  # K
+        antennaTemp: 35  # K
+        waveguideGain: 1  # dB
+        waveguideTemp: 95  # K
+        LNAGain: 30  # dB
+        LNANoiseFig: 1  # K
+        receiverNoiseFig: 9  # dB
+
+        receiverGT: 1 # unit = dB, min=-5, max=6 
+        # (1.8m: 30dB <G/T> 6.0dB) (1.5m: 26dB <G/T> 3dB) (0.6m: 21dB <G/T> -0.5dB) [combination of JDA and quasonix]
+        # if preceise calculation required, use following equation
+        #receiverGT = calculateGT(antennaGainRx, antennaRadomeLossRx, waveguideGain, systemNoiseTemp)
+
+
+        implementationLoss: 0  # dB
+        combinerGain: 3 # unit = dB, min=0, max=4

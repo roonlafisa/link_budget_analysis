@@ -3,6 +3,10 @@ import numpy as np
 c0 = 299792458 #m
 
 def calculateDistance(lat1, lon1, alt1, lat2, lon2, alt2):
+    # function that considers calculates the slant range between two locations (lla coordinates)
+    # input: lla coordinates between two locations
+    # output: variable "distance" is the slant range between the locations. variable "lookAngle" is the look angle from ground station, if
+    # the value is negative then the spacecraft is below horizon. horizontalDistance is the horizontal distance from ground and space craft.
     R0 = 6373.0 #km radius of Earth
     eccentricity = 0.01671 #eccentricity of the Earth
     lat1 = np.radians(lat1) #deg(lat1) ---> radians(lat1)
@@ -43,6 +47,7 @@ def calculateDistance(lat1, lon1, alt1, lat2, lon2, alt2):
     return distance, lookAngle, horizontalDistance
 
 def calculateEIRP (transmitPowerTx, antennaGainTx, lineLossTx, splitterLossTx):
+    # calculate transmitter EIRP in dB
     transmitPowerTxdB = 10 * np.log10(transmitPowerTx)
     totalLossesTx = lineLossTx + splitterLossTx
     EIRP = transmitPowerTxdB + antennaGainTx + totalLossesTx
@@ -50,6 +55,7 @@ def calculateEIRP (transmitPowerTx, antennaGainTx, lineLossTx, splitterLossTx):
 
 
 def calculateFSPL(slantRange, frequency):
+     # calculate Free Space path loss in dB
     FSPL = - (20 * np.log10(slantRange * 1e3) + 20 * np.log10(frequency * 1e6) + 20 * np.log10(4 * np.pi / c0))
     return FSPL
 
@@ -69,6 +75,8 @@ def calculatesignalAtGS(EIRP, FSPL, atmosphericLosses, polarizationLoss):
 def calculateReflectorBeamwidth(antennaGain):
     antennaBeamwidth = 10 ** ((44.3 - antennaGain) / 20)
     return antennaBeamwidth
+
+    
 def calculateAntennaPointingLoss(pointingOffset, antennaBeamwidth):
     pointingOffset = pointingOffset
     antennaPointingLoss = - 12 * (pointingOffset / antennaBeamwidth) ** 2
